@@ -147,3 +147,21 @@ pip install -r requirements.txt
 # Start the proxy gateway
 uvicorn proxy:app --reload --port 8000
 ```
+
+---
+
+## 🏛️ The Non-Human Identity (NHI) Governance Trilogy
+
+`agent-priv-proxy` is the runtime enforcement tier of a three-part zero-trust architecture for enterprise AI and autonomous workloads:
+
+1. [**`ai-grc-auditor`**](https://github.com/ggrajek/ai-grc-auditor): **Continuous Posture & Inventory.** Discovers, fingerprints, and evaluates risk posture across Non-Human Identities, service principals, and API integrations against enterprise compliance frameworks.
+2. [**`agentic-iar`**](https://github.com/ggrajek/agentic-iar): **Automated Access Reviews.** Conducts autonomous identity access reviews, flags overprivileged or dormant credentials, and generates immutable audit trails for revoking unneeded privileges.
+3. [**`agent-priv-proxy`**](https://github.com/ggrajek/agent-priv-proxy): **Runtime Boundary & Interception Proxy.** Intercepts outbound tool directives, mints ephemeral JIT credentials, and gates critical-path actions behind Human-in-the-Loop authorization.
+
+---
+
+## 🖥️ Advanced Desktop Endpoint Architecture
+
+For local developer environments running autonomous coding agents (such as Claude Code, Cursor, or local copilot CLIs), see our endpoint-mediated zero-trust specification:
+
+👉 [**Read `desktop-proxy-arch.md`**](./desktop-proxy-arch.md) for the complete breakdown on combining Windows Filtering Platform (WFP), MiniFilter drivers, and eBPF probes to prevent prompt-injection credential theft and unmonitored shell execution.
