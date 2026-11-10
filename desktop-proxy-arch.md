@@ -17,8 +17,8 @@ This architecture adapts Endpoint Detection and Response (EDR) and Endpoint Priv
 flowchart TD
     subgraph Workstation["Developer Workstation - User Space"]
         User["Developer Terminal"] --> Claude["AI Agent - Claude Code"]
-        Claude -->|"Fork Subprocess / Local Shell"| Exec["OS Executions: bash, rm, git, .env read"]
-        Claude -->|"Outbound Network Directives"| NetReq["Enterprise API / Cloud Calls"]
+        Claude -->|"Fork Subprocess /<br/>Local Shell"| Exec["OS Executions: bash, rm, git, .env read"]
+        Claude -->|"Outbound Network<br/>Directives"| NetReq["Enterprise API / Cloud Calls"]
     end
 
     subgraph DesktopAgent["Intelligent Desktop Security Agent - Kernel Hook Layer"]
