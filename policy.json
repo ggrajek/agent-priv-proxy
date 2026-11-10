@@ -1,0 +1,32 @@
+{
+  "policies": [
+    {
+      "tool_name": "get_user_profile",
+      "action": "READ",
+      "risk_level": "LOW",
+      "requires_hitl": false,
+      "max_token_ttl_seconds": 300
+    },
+    {
+      "tool_name": "list_security_alerts",
+      "action": "READ",
+      "risk_level": "LOW",
+      "requires_hitl": false,
+      "max_token_ttl_seconds": 300
+    },
+    {
+      "tool_name": "reset_user_password",
+      "action": "WRITE",
+      "risk_level": "HIGH",
+      "requires_hitl": true,
+      "max_token_ttl_seconds": 60
+    },
+    {
+      "tool_name": "delete_database_record",
+      "action": "DELETE",
+      "risk_level": "CRITICAL",
+      "requires_hitl": true,
+      "max_token_ttl_seconds": 60
+    }
+  ]
+}
