@@ -11,40 +11,38 @@ When an autonomous AI coding agent runs locally, it executes within user space b
 This architecture adapts Endpoint Detection and Response (EDR) and Endpoint Privilege Management (EPM) primitives (Windows Filtering Platform, MiniFilter file system drivers, and Linux eBPF/LSM) to enforce deterministic zero-trust boundaries over probabilistic AI agents.
 
 ---
-
 ## 2. High-Level Process & Enforcement Flow
 
 ```mermaid
 flowchart TD
-    subgraph Workstation["Developer Workstation (User Space)"]
-        User["Developer Terminal"] --> Claude["AI Agent (e.g., Claude Code)"]
-        Claude -->|"Fork Subprocess / Local Shell"| Exec["OS Executions (bash, rm, git, .env read)"]
-        Claude -->|"Outbound Network Directives"| NetReq["Enterprise API / Cloud Calls (AWS, Entra, APIs)"]
+    subgraph Workstation["Developer Workstation - User Space"]
+        User["Developer Terminal"] --> Claude["AI Agent - Claude Code"]
+        Claude -->|"Fork Subprocess / Local Shell"| Exec["OS Executions: bash, rm, git, .env read"]
+        Claude -->|"Outbound Network Directives"| NetReq["Enterprise API / Cloud Calls"]
     end
 
-    subgraph DesktopAgent["Intelligent Desktop Security Agent (Kernel / Hook Layer)"]
-        MiniFilter["File System MiniFilter / eBPF<br>• Monitors file reads<br>• Blocks access to .env, id_rsa, cloud creds"]
-        WFP["Windows Filtering Platform (WFP) / Socket Filter<br>• Traps outbound network requests from agent PID<br>• Redirects to local loopback proxy"]
-        PolicyEngine["Inline Policy & Risk Engine<br>• Evaluates tool command risk (Low / High / Critical)<br>• Checks operational boundary rules"]
-        HITLGate["Human-in-the-Loop (HITL) Interceptor<br>• Raises OS-level prompt for high-risk actions"]
+    subgraph DesktopAgent["Intelligent Desktop Security Agent - Kernel Hook Layer"]
+        MiniFilter["File System MiniFilter / eBPF<br/>• Monitors file reads<br/>• Shields .env, id_rsa, cloud creds"]
+        WFP["Windows Filtering Platform / Socket Filter<br/>• Traps outbound agent network traffic<br/>• Redirects to local loopback proxy"]
+        PolicyEngine["Inline Policy & Risk Engine<br/>• Evaluates command risk<br/>• Enforces boundary rules"]
+        HITLGate["Human-in-the-Loop Interceptor<br/>• Raises OS-level prompt for sign-off"]
     end
 
     subgraph Upstream["Enterprise Infrastructure"]
-        APIGateway["Protected APIs / Cloud Workloads"]
+        APIGateway["Protected APIs & Cloud Workloads"]
     end
 
     Exec --> MiniFilter
     NetReq --> WFP
     WFP --> PolicyEngine
-    PolicyEngine -->|High Risk Action| HITLGate
+    PolicyEngine -->|"High Risk Action"| HITLGate
 
-    MiniFilter -->|Approved File Access| LocalDisk[("Workstation Disk")]
-    PolicyEngine -->|Low Risk Action (Auto-Approved)| EphemToken["Mint Ephemeral JIT Token"]
-    HITLGate -->|Human Sign-off Granted| EphemToken
+    MiniFilter -->|"Allowed Access"| LocalDisk[("Workstation Disk")]
+    PolicyEngine -->|"Low Risk Action - Auto Approved"| EphemToken["Mint Ephemeral JIT Token"]
+    HITLGate -->|"Human Sign-Off Granted"| EphemToken
     EphemToken --> APIGateway
 ```
 
----
 
 ## 3. Core Protection Mechanisms
 
