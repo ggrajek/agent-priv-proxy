@@ -47,7 +47,7 @@ def test_pipeline():
     print("Pending Queue:")
     print(json.dumps(resp.json(), indent=2))
 
-    # 5. Simulate Human Approver Decision
+    # 5. Simulate Human Approver Decision (Approved)
     print(f"\n--- 5. Simulating Human Sign-Off for Request ID: {request_id} ---")
     approval_payload = {
         "request_id": request_id,
@@ -57,6 +57,32 @@ def test_pipeline():
     resp = client.post("/approval/decision", json=approval_payload)
     print("Approval Response:")
     print(json.dumps(resp.json(), indent=2))
+
+    # 6. Test CRITICAL Risk Tool (delete_database_record)
+    print("\n--- 6. Executing CRITICAL Action (delete_database_record) ---")
+    critical_payload = {
+        "agent_id": "dba-autonomous-agent-01",
+        "tool_name": "delete_database_record",
+        "parameters": {"table": "users_backup_table", "record_id": "rec_99482"},
+        "user_session_id": "sess-live-9921"
+    }
+    resp = client.post("/tool/execute", json=critical_payload)
+    intercepted_crit = resp.json()
+    print("Response:")
+    print(json.dumps(intercepted_crit, indent=2))
+
+    crit_request_id = intercepted_crit.get("request_id")
+    if crit_request_id:
+        # 7. Simulate Human Operator REJECTION
+        print(f"\n--- 7. Simulating Operator REJECTION for Request ID: {crit_request_id} ---")
+        rejection_payload = {
+            "request_id": crit_request_id,
+            "approved": False,
+            "approver": "lead-ciso@contoso.com"
+        }
+        resp = client.post("/approval/decision", json=rejection_payload)
+        print("Rejection Decision Response:")
+        print(json.dumps(resp.json(), indent=2))
 
 if __name__ == "__main__":
     test_pipeline()
